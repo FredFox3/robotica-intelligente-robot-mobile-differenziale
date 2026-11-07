@@ -1,0 +1,29 @@
+# MATLAB editor and session files
+*.asv
+*.m~
+*.autosave
+matlab_crash_dump.*
+java.log.*
+*.mex*
+slprj/
+codegen/
+
+# Local settings and credentials
+.env
+.env.*
+!.env.example
+.aws/
+.codex/
+.vscode/
+.idea/
+
+# OS metadata and temporary files
+.DS_Store
+Thumbs.db
+Desktop.ini
+~$*
+*.tmp
+
+# Disposable output only; final results, MAT data and PDFs remain trackable
+results/tmp/
+report/build/

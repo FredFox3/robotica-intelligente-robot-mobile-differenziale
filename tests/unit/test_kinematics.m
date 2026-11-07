@@ -1,5 +1,5 @@
 function tests = test_kinematics
-%TEST_KINEMATICS Analytical, numerical and invalid-input kinematics tests.
+%TEST_KINEMATICS Check kinematics against analytical solutions and invalid inputs.
     tests = functiontests(localfunctions);
 end
 
@@ -130,13 +130,11 @@ end
 
 function testTranslatedRotatedArc(testCase)
     params = testCase.TestData.params;
-    % Rotate the known quarter circle by pi/2 and translate its origin.
     q0 = [1; -2; pi/2];
     qExact = robot.model.propagateConstant(q0, [6; 2], 3*pi/4, params);
     qNumeric = integrateRepeated(q0, [6; 2], 3*pi/4, 120, params);
     verifyEqual(testCase, qExact(1:2), [0.7; -1.7], 'AbsTol', 1e-12);
     verifyEqual(testCase, qNumeric(1:2), [0.7; -1.7], 'AbsTol', 1e-9);
-    % Compare orientation modulo a turn, independently of the side of pi.
     verifyEqual(testCase, robot.model.normalizeAngle(qExact(3)-pi), 0, ...
         'AbsTol', 1e-12);
     verifyEqual(testCase, robot.model.normalizeAngle(qNumeric(3)-pi), 0, ...
@@ -276,7 +274,7 @@ function testNumericalOverflowIsReported(testCase)
 end
 
 function q = integrateRepeated(q, u, duration, steps, params)
-% Test-only loop: a prescribed command, not a path planner or controller.
+% Integrate a constant wheel command for the analytical test cases.
     dt = duration / steps;
     for index = 1:steps
         q = robot.model.integrateRK4(q, u, dt, params);

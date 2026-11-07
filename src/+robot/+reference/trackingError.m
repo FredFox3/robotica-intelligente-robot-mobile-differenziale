@@ -1,8 +1,6 @@
 function [distance, approximationBound] = trackingError(q, reference, index)
-%TRACKINGERROR Distance to the active primitive's sampled polyline [m].
-%   Distance to the true arc differs by at most APPROXIMATIONBOUND [m].
-%   Uses only the active primitive, avoiding ambiguity at nearby path branches.
-%   REFERENCE comes from buildReference; INDEX comes from control.step.
+%TRACKINGERROR Measure distance to the active primitive's sampled polyline [m].
+%   approximationBound bounds the difference from distance to the true arc.
 
     q = robot.internal.validateColumn(q, 3, 'q');
     count = size(reference.poses, 1);

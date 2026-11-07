@@ -1,5 +1,5 @@
 function value = ensureFinite(value)
-%ENSUREFINITE Reject numerical overflow instead of returning invalid data.
+%ENSUREFINITE Reject nonfinite numerical results.
 
     if any(~isfinite(value(:)))
         error('RobotProject:NumericalFailure', ...

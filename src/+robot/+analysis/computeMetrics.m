@@ -1,8 +1,6 @@
 function summary = computeMetrics(log)
-%COMPUTEMETRICS Summarize an actual simulation, including interrupted prefixes.
-%   Tracking RMS/mean use trapezoidal time weights. No duration => the single
-%   recorded error is reported. Certificates are those recorded by SIMULATE,
-%   distinct from collision detections at poses and from rejected commands.
+%COMPUTEMETRICS Compute tracking, goal and collision metrics from the log.
+%   Mean and RMS tracking errors use trapezoidal time weights.
 
     log = robot.analysis.validateLog(log);
     cfg = log.configuration;

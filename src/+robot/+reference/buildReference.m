@@ -1,8 +1,6 @@
 function reference = buildReference(plan, cfg)
-%BUILDREFERENCE Preserve and verify the ordered samples of an RRT motion plan.
-%   No smoothing or XY shortcuts. Pure rotations retain their angular samples.
-%   CFG geometry/limits must have passed validatePlanningInputs (or be the
-%   unchanged defaultConfig). Invalid/non-successful plans raise InvalidPlan.
+%BUILDREFERENCE Validate and assemble the ordered RRT reference.
+%   Samples include in-place rotations; cfg geometry and limits must be validated.
 
     cfg = robot.control.validateConfig(cfg);
     if ~isstruct(plan) || ~isscalar(plan) || ~isfield(plan, 'status') || ...
@@ -22,8 +20,7 @@ function reference = buildReference(plan, cfg)
     end
     m = size(p.controls, 1);
     k = size(p.samples, 1);
-    % MATLAB linear indexing of a singleton tree can yield a 1-by-0 empty
-    % duration vector. Canonicalize this no-motion case without changing data.
+    % Keep the no-motion duration array as a 0-by-1 column.
     if m == 0 && isempty(p.durations)
         p.durations = zeros(0, 1);
     end

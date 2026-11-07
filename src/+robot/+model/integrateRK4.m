@@ -1,10 +1,6 @@
 function qNext = integrateRK4(q, u, dt, params)
-%INTEGRATERK4 Advance one classical fourth-order Runge-Kutta step.
-%   U is held constant throughout DT [s]. DT must be nonnegative.
-%   Input and output poses are 3-by-1 [m; m; rad]. Output theta is wrapped.
-%   A zero step returns the same position and normalized input angle.
-%   Intermediate stage angles are not wrapped: RK4 uses continuous stages.
-%   No path planning, control, collision checking or simulation loop occurs.
+%INTEGRATERK4 Integrate one RK4 step with constant wheel speeds.
+%   Angles are wrapped after the step; intermediate stages stay continuous.
 
     q = robot.internal.validateColumn(q, 3, 'q');
     u = robot.internal.validateColumn(u, 2, 'u');

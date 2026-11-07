@@ -1,8 +1,6 @@
 function cfg = defaultConfig()
-%DEFAULTCONFIG Return the configurable model, planning and control defaults.
-%   R is the common wheel radius [m]; D is the full wheel separation [m].
-%   Values are design choices, not parameters assigned by the official brief.
-%   No simulation is run and no files are written.
+%DEFAULTCONFIG Return model, planning and control parameters.
+%   r: wheel radius [m]; d: full wheel separation [m].
 
     cfg.robot = struct('r', 0.05, 'd', 0.30);
     cfg.integration = struct('dt', 0.02); % Suggested RK4 step [s].

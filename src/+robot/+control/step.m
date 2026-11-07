@@ -1,8 +1,6 @@
 function [u, state, info] = step(q, reference, state, cfg)
-%STEP Ordered waypoint controller with alignment and final orientation control.
-%   CFG passes validateConfig and validatePlanningInputs; REFERENCE comes
-%   from buildReference. Empty STATE initializes progress. No integration.
-%   Nominal advance: v=kRho*rho, omega=kAlpha*alpha; limits applied jointly.
+%STEP Compute wheel commands for ordered waypoint tracking.
+%   Advance uses v=kRho*rho and omega=kAlpha*alpha, with coupled speed limits.
 
     q = robot.internal.validateColumn(q, 3, 'q');
     count = size(reference.poses, 1);
@@ -59,7 +57,7 @@ function [u, state, info] = step(q, reference, state, cfg)
     function twistRequest = pointCommand(position)
         delta = position-q(1:2);
         info.rho = norm(delta);
-        % Called only for nonzero distance: no physically undefined bearing.
+        % rho is positive here, so the waypoint bearing is defined.
         info.alpha = robot.model.normalizeAngle(atan2(delta(2), delta(1))-q(3));
         info.orientationError = 0;
         if strcmp(state.mode, 'advance')

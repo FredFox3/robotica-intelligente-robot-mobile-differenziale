@@ -1,9 +1,6 @@
 function plan = planRRT(scene, cfg)
-%PLANRRT Forward differential-drive RRT with certified constant-command edges.
-%   Uses the analytical propagator; never connects arbitrary XY interpolations.
-%   Status: success, invalid_input, budget_exhausted. Unexpected numerical
-%   failures raise an error. A finite failed search does NOT prove infeasibility.
-%   RNG state is restored. No plotting, controller or simulation is invoked.
+%PLANRRT Build a differential-drive RRT using constant wheel commands.
+%   Exhausting the search budget does not prove that no path exists.
 
     plan = struct('status', 'invalid_input', 'message', '', ...
         'path', [], 'tree', [], 'iterations', 0, 'seed', []);

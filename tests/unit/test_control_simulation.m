@@ -1,5 +1,5 @@
 function tests = test_control_simulation
-%TEST_CONTROL_SIMULATION Numerical checks of control and simulated motion.
+%TEST_CONTROL_SIMULATION Check tracking, speed limits and collision guards.
     tests = functiontests(localfunctions);
 end
 
@@ -132,8 +132,7 @@ end
 
 function testUnsafeCommandIsNotExecuted(testCase)
     [cfg, scene, plan] = straightPlan();
-    % Deliberately invalidate the nominal corridor AFTER planning. Both poses
-    % remain free; the executed motion must stop before the new obstruction.
+    % Add an obstacle after planning, with both endpoint poses still free.
     scene.circles = [1.4, 1, 0.02];
     log = robot.simulation.simulate(scene, plan, cfg);
     verifyEqual(testCase, log.status, 'tracking_blocked');

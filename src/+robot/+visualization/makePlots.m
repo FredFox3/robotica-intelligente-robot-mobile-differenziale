@@ -1,7 +1,6 @@
 function figures = makePlots(log, outputFolder)
-%MAKEPLOTS Plot actual trajectories, tracking error and held wheel commands.
-%   Optional OUTPUTFOLDER saves the three main figures as PNG at 200 dpi.
-%   No data is generated. Existing files with the same names are replaced.
+%MAKEPLOTS Plot trajectories, tracking error and wheel speeds.
+%   outputFolder exports PNG at 200 dpi, replacing files with the same names.
 
     log = robot.analysis.validateLog(log);
     if nargin < 2
@@ -56,8 +55,7 @@ function figures = makePlots(log, outputFolder)
         text(ax, 0.5, 0.5, 'Durata nulla: nessun comando applicato', ...
             'Units', 'normalized', 'HorizontalAlignment', 'center');
     else
-        % N time stamps, N-1 interval values: extend the last held value
-        % to the final boundary without inventing an extra interval.
+        % Extend the last of N-1 commands to the final time for the stair plot.
         stairs(ax, log.time, [log.u(:, 1); log.u(end, 1)], 'r-', ...
             'DisplayName', 'Ruota destra: omega_R');
         stairs(ax, log.time, [log.u(:, 2); log.u(end, 2)], 'b--', ...

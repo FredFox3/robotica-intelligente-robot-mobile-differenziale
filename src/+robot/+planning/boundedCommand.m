@@ -1,7 +1,6 @@
 function [u, appliedTwist] = boundedCommand(twist, cfg)
-%BOUNDEDCOMMAND Apply one common scale to satisfy wheel and body speed limits.
-%   CFG must have passed validatePlanningInputs. Preserves curvature.
-%   Forward-only planning is enforced separately by candidate generation.
+%BOUNDEDCOMMAND Scale wheel and body speeds together to preserve curvature.
+%   cfg must pass validatePlanningInputs.
 
     twist = robot.internal.validateColumn(twist, 2, 'twist');
     u = robot.model.bodyToWheels(twist, cfg.robot);

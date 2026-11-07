@@ -1,7 +1,6 @@
 function cfg = validateConfig(cfg)
-%VALIDATECONFIG Check the additional control/simulation settings.
-%   Planning geometry/limits must separately pass validatePlanningInputs.
-%   Return double settings; no execution or gain tuning takes place.
+%VALIDATECONFIG Validate controller gains and simulation settings.
+%   Geometry and speed limits must pass validatePlanningInputs separately.
 
     if ~isstruct(cfg) || ~isscalar(cfg) || ...
             ~all(isfield(cfg, {'control', 'simulation', 'integration'}))

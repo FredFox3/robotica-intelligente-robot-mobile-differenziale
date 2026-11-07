@@ -1,8 +1,6 @@
 function scene = makeScenario()
-%MAKESCENARIO Return the mixed circular/polygonal scenario S2 of the design.
-%   Bounds have rows [xmin xmax; ymin ymax], distances are in metres.
-%   Polygon vertices are ordered; the closing vertex is not repeated.
-%   No planning, plotting or simulation is performed here.
+%MAKESCENARIO Define the workspace, obstacles and start/goal poses.
+%   bounds=[xmin xmax; ymin ymax] in metres; polygon vertices are ordered.
 
     scene.bounds = [0, 10; 0, 8];
     scene.circles = [3, 2.5, 0.7; 6, 5.5, 0.8];

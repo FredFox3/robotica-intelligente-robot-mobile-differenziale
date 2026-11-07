@@ -13,7 +13,6 @@ codegen/
 .env.*
 !.env.example
 .aws/
-.codex/
 .vscode/
 .idea/
 

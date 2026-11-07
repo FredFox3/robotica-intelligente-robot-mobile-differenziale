@@ -1,9 +1,6 @@
 function results = run_tests(selection)
-%RUN_TESTS Run the selected suite in MATLAB Online, returning actual results.
-%   RUN_TESTS() or RUN_TESTS('all') runs all currently available tests.
-%   RUN_TESTS('unit') and RUN_TESTS('smoke') select a test folder.
-%   Paths are restored on success or failure. A failing/incomplete suite
-%   raises an error after displaying results; output assignment then aborts.
+%RUN_TESTS Run all tests or select 'unit' or 'smoke'.
+%   Failed or incomplete tests raise an error after displaying the results.
 
     if nargin == 0
         selection = 'all';

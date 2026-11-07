@@ -1,7 +1,5 @@
 function ax = plotPlan(scene, plan, cfg)
-%PLOTPLAN Draw nominal obstacles, disc footprint and the planned trajectory.
-%   No executed/controlled trajectory is implied. On failure show the scene
-%   and status only. The figure is created only on an explicit call.
+%PLOTPLAN Draw the environment, robot footprint and planned path.
 
     [cfg, scene] = robot.config.validatePlanningInputs(cfg, scene);
     fig = figure('Name', 'Differential-drive path planning');

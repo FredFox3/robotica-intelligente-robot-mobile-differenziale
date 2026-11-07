@@ -1,5 +1,5 @@
 function tests = test_analysis
-%TEST_ANALYSIS Numerical checks using actual planner/simulator outputs only.
+%TEST_ANALYSIS Check simulation logs and summary metrics.
     tests = functiontests(localfunctions);
 end
 

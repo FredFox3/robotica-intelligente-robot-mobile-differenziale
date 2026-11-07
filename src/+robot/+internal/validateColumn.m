@@ -1,5 +1,5 @@
 function value = validateColumn(value, expectedLength, name)
-%VALIDATECOLUMN Enforce the public column-vector contract, returning double.
+%VALIDATECOLUMN Check a finite column vector and convert it to double.
 
     if ~isfloat(value) || ~isreal(value) || issparse(value) || ...
             ~isequal(size(value), [expectedLength, 1]) || ...

@@ -1,8 +1,6 @@
 function [valid, qEnd, lowerBound, reason] = checkPrimitive(q, u, duration, scene, cfg)
-%CHECKPRIMITIVE Certify an entire constant-command differential-drive motion.
-%   SCENE and CFG must first pass validatePlanningInputs. Direct calls must
-%   respect this precondition. Returns a conservative clearance lower bound.
-%   Ambiguous intervals at the depth limit are rejected, never accepted.
+%CHECKPRIMITIVE Check a complete constant-command arc for collisions.
+%   scene and cfg must pass validatePlanningInputs; uncertain arcs are rejected.
 
     q = robot.internal.validateColumn(q, 3, 'q');
     u = robot.internal.validateColumn(u, 2, 'u');
@@ -36,6 +34,7 @@ function [valid, qEnd, lowerBound, reason] = checkPrimitive(q, u, duration, scen
             reason = 'collision';
             return;
         end
+        % Clearance can drop by at most half the arc length from the nearer endpoint.
         lengthBound = abs(twist(1)) * (b-a);
         if lengthBound <= cfg.geometry.maxSpatialStep && min(ca, cb) > lengthBound/2 + tol
             bound = min(ca, cb) - lengthBound/2;

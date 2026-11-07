@@ -1,5 +1,5 @@
 function tests = test_project_setup
-%TEST_PROJECT_SETUP Check project setup without running a robot simulation.
+%TEST_PROJECT_SETUP Check required files, paths and the setup entry point.
     tests = functiontests(localfunctions);
 end
 

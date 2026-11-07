@@ -1,8 +1,5 @@
 function wrapped = normalizeAngle(angle)
-%NORMALIZEANGLE Map finite real angles [rad] into [-pi, pi).
-%   Accept a nonempty full floating-point scalar or array; preserve size.
-%   Output is double. The +pi endpoint is represented by -pi.
-%   No Mapping Toolbox function is required.
+%NORMALIZEANGLE Wrap angles to [-pi, pi), mapping +pi to -pi.
 
     if ~isfloat(angle) || ~isreal(angle) || issparse(angle) || ...
             isempty(angle) || any(~isfinite(angle(:)))

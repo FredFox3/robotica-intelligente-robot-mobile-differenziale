@@ -1,9 +1,6 @@
 function ax = animate(log, playbackSpeed)
-%ANIMATE Animate actual RK4 motion with a disc, axle, wheels and heading.
-%   PLAYBACKSPEED defaults to 10 (nominal simulation-time/wall-time ratio).
-%   Dense frame poses reuse RK4 with partial duration and recorded controls;
-%   do not linearly interpolate angles or positions between logged states.
-%   Closing the animation figure stops playback without changing the results.
+%ANIMATE Show robot position and heading along the simulated trajectory.
+%   Intermediate frames use partial RK4 steps with the recorded wheel commands.
 
     log = robot.analysis.validateLog(log);
     if nargin < 2

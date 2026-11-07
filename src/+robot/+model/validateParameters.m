@@ -1,7 +1,5 @@
 function params = validateParameters(params)
-%VALIDATEPARAMETERS Validate geometry and return R and D as doubles.
-%   PARAMS must be a scalar struct with positive, finite, real, full,
-%   floating-point scalar fields R and D, in metres. Other fields are kept.
+%VALIDATEPARAMETERS Check positive wheel radius r and separation d [m].
 
     if ~isstruct(params) || ~isscalar(params) || ...
             ~isfield(params, 'r') || ~isfield(params, 'd')

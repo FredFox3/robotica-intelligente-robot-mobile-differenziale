@@ -1,9 +1,6 @@
 function log = simulate(scene, plan, cfg)
-%SIMULATE Run the ordered waypoint controller with guarded numerical RK4.
-%   No automatic planning, plots, animation or file writing.
-%   Inputs remain unchanged.
-%   Samples of the executed numerical trajectory are in LOG.Q; wheel/body
-%   commands apply on [time(k),time(k+1)). REFERENCE is the planned trajectory.
+%SIMULATE Track the reference with collision-checked RK4 steps.
+%   Wheel commands apply on [time(k),time(k+1)); log.q stores the resulting poses.
 
     [cfg, scene] = robot.config.validatePlanningInputs(cfg, scene);
     cfg = robot.control.validateConfig(cfg);

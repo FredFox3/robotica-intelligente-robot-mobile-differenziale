@@ -1,5 +1,5 @@
 function tests = test_planning
-%TEST_PLANNING Essential numerical planning tests.
+%TEST_PLANNING Check RRT paths, collisions and differential motion.
     tests = functiontests(localfunctions);
 end
 
@@ -84,8 +84,7 @@ end
 function testRRTExpansionAndGoalReconstruction(testCase)
     [cfg, scene] = emptyScene();
     scene.qf = [2.2; 1; pi/2];
-    % Ignore goal angle in this numerical fixture only by making its weight
-    % small: the deterministic forward candidate must improve proximity.
+    % A small heading weight lets the forward candidate improve the metric.
     cfg.planning.headingWeight = 0.01;
     cfg.planning.goalBias = 1;
     cfg.planning.numCandidates = 3;
@@ -95,7 +94,6 @@ function testRRTExpansionAndGoalReconstruction(testCase)
     assertEqual(testCase, plan.status, 'success');
     verifyGreaterThan(testCase, plan.iterations, 0);
     verifyPlan(testCase, plan, scene, cfg);
-    % The connector's final pure rotation must remain in the sampled path.
     xySteps = diff(plan.path.samples(:, 1:2), 1, 1);
     angleSteps = robot.model.normalizeAngle(diff(plan.path.samples(:, 3)));
     verifyTrue(testCase, any(hypot(xySteps(:, 1), xySteps(:, 2)) < 1e-12 & abs(angleSteps) > 0.01));
@@ -137,8 +135,7 @@ function testSmallBearingWithTightPositionTolerance(testCase)
     cfg.planning.goalPositionTolerance = 1e-10;
     cfg.planning.goalAngleTolerance = 1e-4;
     cfg.planning.maxIterations = 0;
-    % Bearing is about 2e-6 rad: below final-angle tolerance, but cannot be
-    % skipped before a half-metre translation with 1e-10 m position tolerance.
+    % A 2e-6 rad bearing matters when position tolerance is 1e-10 m.
     plan = robot.planning.planRRT(scene, cfg);
     assertEqual(testCase, plan.status, 'success');
     verifyLessThanOrEqual(testCase, norm(plan.path.states(end, 1:2)'-scene.qf(1:2)), ...

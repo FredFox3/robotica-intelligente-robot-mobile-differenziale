@@ -1,8 +1,7 @@
 function value = clearance(p, scene, safeRadius)
-%CLEARANCE Signed clearance of a disc centre from walls and obstacles [m].
-%   SCENE must have been checked by validatePlanningInputs. SAFERADIUS is
-%   body radius plus margin, applied ONCE. Positive means free; contact is 0.
-%   Concave simple polygons are supported. Distances are to edges, not vertices.
+%CLEARANCE Compute signed clearance from walls and obstacles [m].
+%   safeRadius is body radius plus margin; scene must be validated.
+%   Positive clearance is free space; zero is contact.
 
     p = robot.internal.validateColumn(p, 2, 'p');
     if ~isfloat(safeRadius) || ~isscalar(safeRadius) || ~isreal(safeRadius) || ...

@@ -1,7 +1,6 @@
 function log = validateLog(log)
-%VALIDATELOG Check actual simulation data before analysis or visualization.
-%   Reject empty/misaligned/nonfinite arrays. Do not generate replacement data.
-%   N poses correspond to N-1 held wheel commands; N=1 is a valid no-motion log.
+%VALIDATELOG Check simulation array sizes, timing and motion consistency.
+%   N poses correspond to N-1 constant wheel commands.
 
     required = {'configuration', 'scene', 'reference', 'q', 'time', 'u', 'twist', ...
         'rho', 'alpha', 'orientationError', 'trackingError', 'trackingApproximationBound', ...
@@ -83,7 +82,6 @@ function log = validateLog(log)
                 angleError > cfg.control.goalAngleTolerance))
         error('RobotProject:InvalidLog', 'Initial/final states or reported goal errors are inconsistent.');
     end
-    % Check the logged twist against the actual ordered wheel commands.
     for index = 1:n-1
         twist = robot.model.wheelsToBody(log.u(index, :)', cfg.robot);
         if any(abs(twist-log.twist(index, :)') > 1e-10) || ...

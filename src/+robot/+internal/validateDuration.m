@@ -1,5 +1,5 @@
 function duration = validateDuration(duration)
-%VALIDATEDURATION Accept a finite nonnegative floating-point scalar [s].
+%VALIDATEDURATION Check a finite, nonnegative duration [s].
 
     if ~isfloat(duration) || ~isreal(duration) || issparse(duration) || ...
             ~isscalar(duration) || ~isfinite(duration) || duration < 0

@@ -1,7 +1,6 @@
 function connection = connectGoal(q, scene, cfg)
-%CONNECTGOAL Try a validated rotate/translate/rotate differential connection.
-%   Inputs SCENE/CFG must have passed validatePlanningInputs. A rejected
-%   connection contains no partially accepted path. No state is snapped.
+%CONNECTGOAL Try a rotate/translate/rotate connection to the goal.
+%   scene and cfg must pass validatePlanningInputs.
 
     q = robot.internal.validateColumn(q, 3, 'q');
     connection = struct('success', false, 'states', q', ...
@@ -17,10 +16,7 @@ function connection = connectGoal(q, scene, cfg)
     distance = norm(positionDelta);
     if distance > cfg.planning.goalPositionTolerance
         targetHeading = atan2(positionDelta(2), positionDelta(1));
-        % Final-angle tolerance cannot be used here: even a small heading
-        % error can violate a tighter position tolerance after translation.
-        % Reserve most of the position budget for floating-point effects;
-        % suppress negligible rotations rather than adding near-zero times.
+        % Reserve three quarters of the position tolerance for numerical error.
         bearingTolerance = min(cfg.planning.goalAngleTolerance, ...
             atan2(cfg.planning.goalPositionTolerance/4, distance));
         if ~rotateTo(targetHeading, bearingTolerance)

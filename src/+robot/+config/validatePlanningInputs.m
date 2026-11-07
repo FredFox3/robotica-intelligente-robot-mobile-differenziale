@@ -1,8 +1,6 @@
 function [cfg, scene] = validatePlanningInputs(cfg, scene)
-%VALIDATEPLANNINGINPUTS Validate configuration and canonical scene geometry.
-%   Invalid inputs raise InvalidPlanningConfig or InvalidScene (or the
-%   existing model input errors). Pose collision is checked by PLANRRT.
-%   Circles/polygons may overlap or extend beyond the workspace.
+%VALIDATEPLANNINGINPUTS Validate robot settings and obstacle geometry.
+%   Pose collisions are checked separately by planRRT.
 
     if ~isstruct(cfg) || ~isscalar(cfg) || ...
             ~all(isfield(cfg, {'robot', 'limits', 'geometry', 'planning'}))
@@ -39,7 +37,6 @@ function [cfg, scene] = validatePlanningInputs(cfg, scene)
         error('RobotProject:InvalidPlanningConfig', ...
             'durationRange must be [positive minimum, maximum >= minimum].');
     end
-    % Planning arithmetic is double even when configuration values are single.
     groups = {'limits', 'geometry', 'planning'};
     for groupIndex = 1:numel(groups)
         group = groups{groupIndex};

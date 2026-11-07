@@ -1,8 +1,6 @@
 function path = reconstructPath(tree, lastNode, cfg)
-%RECONSTRUCTPATH Trace directed parents and sample the actual motion primitives.
-%   TREE is the validated tree built by planRRT; row 1 is the root.
-%   STATES contains junction poses; SAMPLES includes rotations in place.
-%   Times are nominal planning times, not a simulated tracking result.
+%RECONSTRUCTPATH Recover tree edges and sample their motion primitives.
+%   Times are nominal planning times, distinct from closed-loop timing.
 
     count = size(tree.Q, 1);
     if ~isscalar(lastNode) || lastNode < 1 || lastNode > count || lastNode ~= floor(lastNode)

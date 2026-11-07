@@ -1,9 +1,6 @@
 function project = main(action)
-%MAIN Prepare settings or explicitly run the complete project pipeline.
-%   PROJECT = MAIN() or MAIN('setup') adds SRC and returns settings only.
-%   PROJECT = MAIN('run') plans, simulates, summarizes, saves three PNGs in
-%   RESULTS and animates the actual motion. Numerical results are saved in
-%   RESULTS/risultati.mat before graphics. No tests are run automatically.
+%MAIN Set up the project or run planning, simulation and plots.
+%   main() returns settings; main('run') runs the simulation and animation.
 
     if nargin == 0
         action = 'setup';
@@ -43,8 +40,7 @@ function project = main(action)
             error('RobotProject:OutputWriteFailed', '%s', message);
         end
     end
-    % Preserve the real log/plan/settings even if rendering or animation fails.
-    % Save before graphics so the archive contains no figure handles.
+    % Save numerical data before graphics so rendering errors do not lose it.
     save(fullfile(project.outputFolder, 'risultati.mat'), 'project');
     project.figures = robot.visualization.makePlots(project.log, project.outputFolder);
     project.animationAxes = robot.visualization.animate(project.log);

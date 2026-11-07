@@ -30,8 +30,9 @@ function path = reconstructPath(tree, lastNode, cfg)
     edges = indices(2:end);
     path.states = tree.Q(indices, :);
     path.controls = tree.Uin(edges, :);
-    path.durations = tree.Tin(edges);
-    path.clearances = tree.clearance(edges);
+    % Explicit column indexing preserves 0-by-1 shape for a root-only path.
+    path.durations = tree.Tin(edges, 1);
+    path.clearances = tree.clearance(edges, 1);
 
     edgeCount = numel(edges);
     steps = zeros(edgeCount, 1);

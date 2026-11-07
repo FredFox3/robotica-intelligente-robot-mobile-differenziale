@@ -2,7 +2,8 @@ function project = main(action)
 %MAIN Prepare settings or explicitly run the complete project pipeline.
 %   PROJECT = MAIN() or MAIN('setup') adds SRC and returns settings only.
 %   PROJECT = MAIN('run') plans, simulates, summarizes, saves three PNGs in
-%   RESULTS and animates the actual motion. No tests are run automatically.
+%   RESULTS and animates the actual motion. Numerical results are saved in
+%   RESULTS/risultati.mat before graphics. No tests are run automatically.
 %   Execution is deferred to the final MATLAB Online verification phase.
 
     if nargin == 0
@@ -40,6 +41,15 @@ function project = main(action)
     project.summary = robot.analysis.computeMetrics(project.log);
     disp(project.summary);
     project.outputFolder = fullfile(projectRoot, 'results');
+    if ~isfolder(project.outputFolder)
+        [created, message] = mkdir(project.outputFolder);
+        if ~created
+            error('RobotProject:OutputWriteFailed', '%s', message);
+        end
+    end
+    % Preserve the real log/plan/settings even if rendering or animation fails.
+    % Save before graphics so the archive contains no figure handles.
+    save(fullfile(project.outputFolder, 'risultati.mat'), 'project');
     project.figures = robot.visualization.makePlots(project.log, project.outputFolder);
     project.animationAxes = robot.visualization.animate(project.log);
 end

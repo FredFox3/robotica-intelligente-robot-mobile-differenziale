@@ -17,7 +17,13 @@ function connection = connectGoal(q, scene, cfg)
     distance = norm(positionDelta);
     if distance > cfg.planning.goalPositionTolerance
         targetHeading = atan2(positionDelta(2), positionDelta(1));
-        if ~rotateTo(targetHeading)
+        % Final-angle tolerance cannot be used here: even a small heading
+        % error can violate a tighter position tolerance after translation.
+        % Reserve most of the position budget for floating-point effects;
+        % suppress negligible rotations rather than adding near-zero times.
+        bearingTolerance = min(cfg.planning.goalAngleTolerance, ...
+            atan2(cfg.planning.goalPositionTolerance/4, distance));
+        if ~rotateTo(targetHeading, bearingTolerance)
             reject();
             return;
         end
@@ -27,7 +33,7 @@ function connection = connectGoal(q, scene, cfg)
             return;
         end
     end
-    if ~rotateTo(scene.qf(3))
+    if ~rotateTo(scene.qf(3), cfg.planning.goalAngleTolerance)
         reject();
         return;
     end
@@ -37,10 +43,10 @@ function connection = connectGoal(q, scene, cfg)
         reject();
     end
 
-    function ok = rotateTo(heading)
+    function ok = rotateTo(heading, tolerance)
         delta = robot.model.normalizeAngle(heading-q(3));
         ok = true;
-        if abs(delta) <= cfg.planning.goalAngleTolerance
+        if abs(delta) <= tolerance
             return;
         end
         [command, actual] = robot.planning.boundedCommand( ...

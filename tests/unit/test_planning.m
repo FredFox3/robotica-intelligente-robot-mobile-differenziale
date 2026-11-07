@@ -109,6 +109,8 @@ function testCoincidentPosesAndPureRotation(testCase)
     assertEqual(testCase, plan.status, 'success');
     verifySize(testCase, plan.path.samples, [1, 3]);
     verifyEmpty(testCase, plan.path.controls);
+    verifySize(testCase, plan.path.durations, [0, 1]);
+    verifySize(testCase, plan.path.clearances, [0, 1]);
     scene.qf(3) = pi/2;
     plan = robot.planning.planRRT(scene, cfg);
     assertEqual(testCase, plan.status, 'success');
@@ -127,6 +129,22 @@ function testBarrierHasNoFalseConnection(testCase)
     plan = robot.planning.planRRT(scene, cfg);
     verifyEqual(testCase, plan.status, 'budget_exhausted');
     verifyEmpty(testCase, plan.path);
+end
+
+function testSmallBearingWithTightPositionTolerance(testCase)
+    [cfg, scene] = emptyScene();
+    scene.qf = [1.5; 1+1e-6; 0];
+    cfg.planning.goalPositionTolerance = 1e-10;
+    cfg.planning.goalAngleTolerance = 1e-4;
+    cfg.planning.maxIterations = 0;
+    % Bearing is about 2e-6 rad: below final-angle tolerance, but cannot be
+    % skipped before a half-metre translation with 1e-10 m position tolerance.
+    plan = robot.planning.planRRT(scene, cfg);
+    assertEqual(testCase, plan.status, 'success');
+    verifyLessThanOrEqual(testCase, norm(plan.path.states(end, 1:2)'-scene.qf(1:2)), ...
+        cfg.planning.goalPositionTolerance);
+    verifyLessThanOrEqual(testCase, abs(robot.model.normalizeAngle( ...
+        plan.path.states(end, 3)-scene.qf(3))), cfg.planning.goalAngleTolerance);
 end
 
 function testInvalidScenesAndConfigurations(testCase)

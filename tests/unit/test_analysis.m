@@ -63,6 +63,12 @@ function testMisalignedAndInconsistentLogsAreRejected(testCase)
     log = original;
     log.finalPositionError = log.finalPositionError+0.1;
     verifyError(testCase, @() robot.analysis.validateLog(log), 'RobotProject:InvalidLog');
+    log = original;
+    log.q(2, 1) = log.q(2, 1)+0.1; % Interior pose jump; endpoints unchanged.
+    verifyError(testCase, @() robot.analysis.validateLog(log), 'RobotProject:InvalidLog');
+    log = original;
+    log.time(2) = log.time(2)/2; % Still increasing, but inconsistent with motion.
+    verifyError(testCase, @() robot.analysis.validateLog(log), 'RobotProject:InvalidLog');
 end
 
 function log = actualLog(stationary, obstruct)

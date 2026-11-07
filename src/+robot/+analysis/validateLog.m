@@ -92,6 +92,19 @@ function log = validateLog(log)
                 abs(twist(2)) > cfg.limits.omega+1e-12
             error('RobotProject:InvalidLog', 'Logged wheel/body commands or limits are inconsistent.');
         end
+        dt = log.time(index+1)-log.time(index);
+        endpoint = robot.model.propagateConstant(log.q(index, :)', ...
+            log.u(index, :)', dt, cfg.robot);
+        expectedBound = robot.internal.ensureFinite(sqrt(2)*abs(twist(1))* ...
+            abs(twist(2))^4*dt^5/2880 + cfg.simulation.positionRoundoff);
+        boundTolerance = 1e-12*max(1, expectedBound);
+        if abs(log.integrationErrorBound(index)-expectedBound) > boundTolerance || ...
+                norm(endpoint(1:2)-log.q(index+1, 1:2)') > log.integrationErrorBound(index) || ...
+                abs(robot.model.normalizeAngle(endpoint(3)-log.q(index+1, 3))) > ...
+                    cfg.simulation.angleRoundoff
+            error('RobotProject:InvalidLog', ...
+                'Logged poses, times and wheel commands are not kinematically synchronized.');
+        end
     end
 
     function value = array(name, rows, columns)

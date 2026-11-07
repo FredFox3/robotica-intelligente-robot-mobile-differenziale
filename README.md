@@ -1,6 +1,6 @@
 ﻿# PIANIFICAZIONE E CONTROLLO DI UN ROBOT MOBILE DIFFERENZIALE
 
-Elaborato universitario basato sulla [traccia ufficiale trascritta](TRACCIA_Robot_Mobile_Differenziale.md). **FASE 6 — Visualizzazione, animazione e analisi:** pipeline e visualizzazioni implementate e revisionate staticamente; programma e test **non ancora eseguiti**.
+Elaborato universitario basato sulla [traccia ufficiale trascritta](TRACCIA_Robot_Mobile_Differenziale.md). **FASE 7 — Audit statico finale:** revisione dei 36 file MATLAB completata e correzioni mirate applicate. Programma e test **non ancora eseguiti**. Resoconto nella [checklist, §8](docs/Checklist_Requisiti.md#8-audit-statico-finale-fase-7).
 
 Sono disponibili cinematica, RRT differenziale, controllo a waypoint, simulazione RK4, riepilogo numerico, confronto delle traiettorie, grafici di tracking e velocità ruota, animazione e salvataggio PNG. Non sono disponibili risultati effettivi finché non sarà eseguita la prova in MATLAB Online.
 
@@ -94,7 +94,7 @@ Questa è una procedura predisposta, non già eseguita. L'azione esplicita `run`
 
 Su una simulazione completata o interrotta, `project.log` conserva i dati, `project.summary` il riepilogo, `project.figures` le tre figure e `project.animationAxes` l'animazione. Anche un prefisso interrotto viene analizzato, mantenendo visibile il motivo d'arresto e senza attribuirgli un arrivo riuscito.
 
-Durante `run` vengono creati soltanto i PNG `results/traiettorie.png`, `results/errore_tracking.png` e `results/velocita_ruote.png`, a 200 dpi mediante strumenti MATLAB standard. La cartella è relativa alla radice del progetto, derivata dal file `main.m`; file omonimi vengono sostituiti da un'esecuzione successiva. Nessuna cartella risultati o immagine viene creata durante la preparazione statica.
+Durante `run`, dopo simulazione e riepilogo, `results/risultati.mat` salva la struttura `project` con configurazione, scena, piano, log e metriche **prima del rendering**, senza handle grafici. Questo conserva i dati numerici anche se la successiva esportazione o animazione genera un errore. Seguono i PNG `results/traiettorie.png`, `results/errore_tracking.png` e `results/velocita_ruote.png`, a 200 dpi. La cartella è derivata dalla posizione di `main.m`; file omonimi vengono sostituiti da un'esecuzione successiva. Il MAT non viene creato se la pianificazione fallisce prima della simulazione. Nessun risultato o cartella è stato generato durante questo audit.
 
 Le API riutilizzabili sono `robot.analysis.computeMetrics(log)`, `robot.visualization.makePlots(log,outputFolder)` e `robot.visualization.animate(log,playbackSpeed)`. Omettendo `outputFolder`, `makePlots` non salva file. La velocità nominale di riproduzione è 10 volte il tempo simulato, con circa 20 aggiornamenti al secondo; il rendering può rallentarla. Chiudere la figura interrompe l'animazione, senza modificare i dati o il riepilogo già prodotti. Non è introdotto un esportatore video/GIF.
 
@@ -130,7 +130,34 @@ results = run_tests('smoke');      % struttura
 
 `run_tests` risolve le cartelle dalla propria posizione e ripristina il path alla fine, anche in caso di errore. Mostra i risultati effettivi; se la suite è vuota, fallisce o contiene test incompleti, solleva un errore. In caso di errore l'assegnazione a `results` non viene completata: consultare l'output della suite. Non è richiesto alcun cambio di cartella interno permanente. Dopo aver reso il punto di ingresso raggiungibile nel path, si può invocarlo anche da un'altra cartella.
 
-La suite unit include anche quattro verifiche numeriche dell'analisi che usano output del pianificatore e del simulatore, senza dati sostitutivi: caso fermo, tracking rettilineo, comando bloccato e rifiuto di log incoerenti. I controlli preliminari rifiutano array vuoti o non finiti, tempi non crescenti, dimensioni disallineate e metadati finali incoerenti prima di disegnare o salvare. Nessun test è stato avviato durante questa fase; l'aspetto grafico richiederà verifica visiva in MATLAB Online.
+La suite unit include anche quattro verifiche numeriche dell'analisi che usano output del pianificatore e del simulatore, senza dati sostitutivi: caso fermo, tracking rettilineo, comando bloccato e rifiuto di log incoerenti. Il validatore controlla anche il moto tra pose consecutive rispetto a comandi, tempi e bound RK4 registrati. L'audit aggiunge una regressione della connessione al goal con tolleranza di posizione stretta e rafforza i controlli sugli array vuoti. Sono presenti **52 funzioni di test** contate staticamente in cinque file, non un esito della discovery/esecuzione MATLAB. Nessun test è stato avviato; l'aspetto grafico richiederà verifica visiva.
+
+## Procedura prevista per la sessione MATLAB Online
+
+Aprire in MATLAB Online la cartella completa in una posizione scrivibile di MATLAB Drive e impostarla come Current Folder. Usare un'unica sessione per Code Analyzer, test e prova completa, senza eseguire questi comandi durante la preparazione statica:
+
+```matlab
+if ~isfolder('results')
+    mkdir('results');
+end
+diary(fullfile('results', 'verifica_matlab.txt'));
+disp(version);
+files = [dir('*.m'); dir(fullfile('src', '**', '*.m')); ...
+    dir(fullfile('tests', '**', '*.m'))];
+for index = 1:numel(files)
+    checkcode(fullfile(files(index).folder, files(index).name), '-id');
+end
+results = run_tests();
+save(fullfile('results', 'test_results.mat'), 'results');
+project = main('run');
+diary off
+```
+
+Esaminare i messaggi del Code Analyzer: la revisione manuale dell'audit non equivale al parser MATLAB. Un test fallito o incompleto interrompe il lanciatore; in tal caso non avviare la prova completa, conservare il diario e chiuderlo con `diary off`. Le segnalazioni del Code Analyzer vanno valutate distinguendo errori di sintassi da suggerimenti e soppressioni intenzionali, come quelle dei guardiani `onCleanup`.
+
+Nella prova completa verificare `project.plan.status`, poi `project.log.status`, `goalReached`, errori finali, limiti ruota e informazioni sulle collisioni. Un piano riuscito non equivale all'arrivo controllato. Controllare visivamente le tre figure, i PNG e l'animazione, compresi orientamento e ruote. Conservare versione dei sorgenti, diario, risultati dei test, MAT numerico e PNG realmente prodotti. Se si verifica un errore grafico, il MAT numerico già salvato consente di recuperare i dati senza ripetere la simulazione. Non considerare test eseguiti una seconda volta solo perché si rigenerano i grafici.
+
+**Esito statico:** il progetto è pronto per essere provato in MATLAB Online; rimangono da verificare parser, risultati numerici, completamento dello scenario S2, tempi di calcolo e comportamento grafico. Non è garantito il funzionamento alla prima esecuzione e non è dichiarato superato alcun test.
 
 ## Documentazione e prossima fase
 

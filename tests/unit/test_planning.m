@@ -1,5 +1,5 @@
 function tests = test_planning
-%TEST_PLANNING Essential numerical planning tests, prepared but NOT executed.
+%TEST_PLANNING Essential numerical planning tests.
     tests = functiontests(localfunctions);
 end
 

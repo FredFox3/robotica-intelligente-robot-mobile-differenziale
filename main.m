@@ -4,7 +4,6 @@ function project = main(action)
 %   PROJECT = MAIN('run') plans, simulates, summarizes, saves three PNGs in
 %   RESULTS and animates the actual motion. Numerical results are saved in
 %   RESULTS/risultati.mat before graphics. No tests are run automatically.
-%   Execution is deferred to the final MATLAB Online verification phase.
 
     if nargin == 0
         action = 'setup';
@@ -19,8 +18,6 @@ function project = main(action)
     project = struct( ...
         'name', 'PIANIFICAZIONE E CONTROLLO DI UN ROBOT MOBILE DIFFERENZIALE', ...
         'executionEnvironment', 'MATLAB desktop / MATLAB Online', ...
-        'status', 'visualization_analysis_implemented', ...
-        'executionValidation', 'pending_matlab_online', ...
         'simulationExecuted', false);
     project.config = robot.config.defaultConfig();
     if strcmp(action, 'setup')
@@ -37,7 +34,6 @@ function project = main(action)
     fprintf('Simulazione del moto controllato...\n');
     project.log = robot.simulation.simulate(project.scene, project.plan, project.config);
     project.simulationExecuted = true;
-    project.executionValidation = 'program_executed_tests_not_run';
     project.summary = robot.analysis.computeMetrics(project.log);
     disp(project.summary);
     project.outputFolder = fullfile(projectRoot, 'results');

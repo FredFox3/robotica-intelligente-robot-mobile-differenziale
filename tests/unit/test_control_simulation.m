@@ -1,6 +1,5 @@
 function tests = test_control_simulation
-%TEST_CONTROL_SIMULATION Numerical checks prepared for MATLAB Online only.
-%   No test or simulated result has been executed/observed during development.
+%TEST_CONTROL_SIMULATION Numerical checks of control and simulated motion.
     tests = functiontests(localfunctions);
 end
 

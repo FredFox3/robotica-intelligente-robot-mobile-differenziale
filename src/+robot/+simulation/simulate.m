@@ -1,7 +1,7 @@
 function log = simulate(scene, plan, cfg)
 %SIMULATE Run the ordered waypoint controller with guarded numerical RK4.
-%   For MATLAB Online only during the final execution phase. No automatic
-%   planning, plots, animation or file writing. Inputs remain unchanged.
+%   No automatic planning, plots, animation or file writing.
+%   Inputs remain unchanged.
 %   Samples of the executed numerical trajectory are in LOG.Q; wheel/body
 %   commands apply on [time(k),time(k+1)). REFERENCE is the planned trajectory.
 

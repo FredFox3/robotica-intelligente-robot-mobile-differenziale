@@ -1,6 +1,5 @@
 function tests = test_kinematics
 %TEST_KINEMATICS Analytical, numerical and invalid-input kinematics tests.
-%   Prepared for later execution in MATLAB Online; no recorded result yet.
     tests = functiontests(localfunctions);
 end
 

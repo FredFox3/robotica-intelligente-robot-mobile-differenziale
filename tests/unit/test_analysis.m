@@ -1,6 +1,5 @@
 function tests = test_analysis
 %TEST_ANALYSIS Numerical checks using actual planner/simulator outputs only.
-%   Prepared for final MATLAB Online execution; not executed in development.
     tests = functiontests(localfunctions);
 end
 
